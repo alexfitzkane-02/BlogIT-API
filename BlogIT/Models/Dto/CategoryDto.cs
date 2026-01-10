@@ -1,6 +1,6 @@
-﻿namespace BlogIT.Models.Domain
+﻿namespace BlogIT.Models.Dto
 {
-    public class Category
+    public class CategoryDto
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

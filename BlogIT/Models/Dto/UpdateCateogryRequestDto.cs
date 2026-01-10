@@ -1,8 +1,7 @@
-﻿namespace BlogIT.Models.Domain
+﻿namespace BlogIT.Models.Dto
 {
-    public class Category
+    public class UpdateCateogryRequestDto
     {
-        public Guid Id { get; set; }
         public string Name { get; set; }
         public string UrlHandle { get; set; }
     }

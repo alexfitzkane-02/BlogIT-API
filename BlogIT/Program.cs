@@ -10,6 +10,8 @@ using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using BlogIT.Data;
 using Microsoft.Extensions.DependencyInjection;
+using BlogIT.Repositories.Interface;
+using BlogIT.Repositories.Implementation;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,6 +38,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(connectionSring);
 });
+
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 var app = builder.Build();
 
