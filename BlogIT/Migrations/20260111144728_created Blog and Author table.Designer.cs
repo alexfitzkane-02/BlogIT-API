@@ -4,6 +4,7 @@ using BlogIT.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlogIT.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260111144728_created Blog and Author table")]
+    partial class createdBlogandAuthortable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,21 +24,6 @@ namespace BlogIT.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("BlogCategory", b =>
-                {
-                    b.Property<Guid>("BlogsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("CategoriesId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("BlogsId", "CategoriesId");
-
-                    b.HasIndex("CategoriesId");
-
-                    b.ToTable("BlogCategory");
-                });
 
             modelBuilder.Entity("BlogIT.Models.Domain.Author", b =>
                 {
@@ -103,6 +91,9 @@ namespace BlogIT.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("BlogId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -113,22 +104,9 @@ namespace BlogIT.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BlogId");
+
                     b.ToTable("Categories");
-                });
-
-            modelBuilder.Entity("BlogCategory", b =>
-                {
-                    b.HasOne("BlogIT.Models.Domain.Blog", null)
-                        .WithMany()
-                        .HasForeignKey("BlogsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BlogIT.Models.Domain.Category", null)
-                        .WithMany()
-                        .HasForeignKey("CategoriesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("BlogIT.Models.Domain.Blog", b =>
@@ -140,6 +118,18 @@ namespace BlogIT.Migrations
                         .IsRequired();
 
                     b.Navigation("Author");
+                });
+
+            modelBuilder.Entity("BlogIT.Models.Domain.Category", b =>
+                {
+                    b.HasOne("BlogIT.Models.Domain.Blog", null)
+                        .WithMany("Categories")
+                        .HasForeignKey("BlogId");
+                });
+
+            modelBuilder.Entity("BlogIT.Models.Domain.Blog", b =>
+                {
+                    b.Navigation("Categories");
                 });
 #pragma warning restore 612, 618
         }
