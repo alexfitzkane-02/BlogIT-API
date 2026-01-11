@@ -19,7 +19,7 @@ namespace BlogIT.Controllers
         }
 
         [HttpGet]
-        [Route("getcategories")]
+        [Route("categories")]
         public async Task<IActionResult> GetAllCategories()
         {
             //store results in variable
@@ -58,7 +58,7 @@ namespace BlogIT.Controllers
                 return Ok(category);
             }
 
-            return NotFound();
+            return NotFound("Category not found");
         }
 
         [HttpPut]
@@ -88,11 +88,11 @@ namespace BlogIT.Controllers
                 return Ok(categoryDto);
             }
 
-            return NotFound();
+            return NotFound("Category not found");
         }
 
         [HttpPost]
-        [Route("createcategory")]
+        [Route("category")]
         public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryDto createCategoryDto)
         {
             //convert dto to data model
@@ -107,20 +107,23 @@ namespace BlogIT.Controllers
             var response = await _categoryRepository.CreateAsync(category);
 
             //convert response to dto
-
-            var categoryDto = new CategoryDto
+            if(response is not null)
             {
-                Id = response.Id,
-                Name = response.Name,
-                UrlHandle = response.UrlHandle
-            };
+                var categoryDto = new CategoryDto
+                {
+                    Id = response.Id,
+                    Name = response.Name,
+                    UrlHandle = response.UrlHandle
+                };
 
-            return Ok(categoryDto);
+                return Ok(categoryDto);
+            }
 
+            return BadRequest("Unable to create category");
         }
 
         [HttpDelete]
-        [Route("deletecategory")]
+        [Route("category")]
         public async Task<IActionResult> DeleteCategory([FromHeader] Guid id)
         {
             
@@ -128,11 +131,11 @@ namespace BlogIT.Controllers
             
             if(response is not null)
             {
-                return Ok();
+                return Ok("Category deleted successfully");
             }
             else
             {
-              return NotFound();
+              return NotFound("Category not found");
 
             }
         }
