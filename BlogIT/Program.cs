@@ -39,8 +39,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionSring);
 });
 
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ICategoryInterface, CategoryRepository>();
 builder.Services.AddScoped<IAuthorInterface, AuthorRepository>();
+builder.Services.AddScoped<IBlogInterface, BlogRepository>();
 
 var app = builder.Build();
 

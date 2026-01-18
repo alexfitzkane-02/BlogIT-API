@@ -11,9 +11,9 @@ namespace BlogIT.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-        private readonly ICategoryRepository _categoryRepository;
+        private readonly ICategoryInterface _categoryRepository;
 
-        public CategoryController(ICategoryRepository categoryRepository)
+        public CategoryController(ICategoryInterface categoryRepository)
         {
             this._categoryRepository = categoryRepository;
         }

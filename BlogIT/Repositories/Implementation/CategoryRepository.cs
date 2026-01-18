@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace BlogIT.Repositories.Implementation
 {
-    public class CategoryRepository : ICategoryRepository
+    public class CategoryRepository : ICategoryInterface
     {
         private readonly ApplicationDbContext _applicationDbContext;
 

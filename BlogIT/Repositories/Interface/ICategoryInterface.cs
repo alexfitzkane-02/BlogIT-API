@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BlogIT.Repositories.Interface
 {
-    public interface ICategoryRepository
+    public interface ICategoryInterface
     {
         Task<IEnumerable<Category>> GetAllCategoriesAsync();
         Task<Category?> GetCategoryByIdAsync(Guid id);
