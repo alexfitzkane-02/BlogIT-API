@@ -61,15 +61,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-//app.MapGet("secrets", async (IConfiguration configuration) =>
-//{
-//    var secretsClient = new SecretClient(
-//        new Uri(configuration["KeyVault:KeyVaultUri"]!),
-//        new DefaultAzureCredential());
-
-//    Response<KeyVaultSecret> response = await secretsClient.GetSecretAsync("BlogITDevConnection");
-//    return Results.Ok(response);
-//});
+app.UseCors(options =>
+{
+    options.AllowAnyHeader()
+          .AllowAnyMethod()
+          .AllowAnyOrigin();
+});
 
 app.UseAuthorization();
 
