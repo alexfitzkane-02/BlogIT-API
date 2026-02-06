@@ -19,7 +19,6 @@ namespace BlogIT.Controllers
         }
 
         [HttpGet]
-        [Route("authors")]
         public async Task<IActionResult> GetAllAuthorsAsync()
         {
             var response = await _authorInterface.GetAuthorsAsync();
@@ -44,8 +43,8 @@ namespace BlogIT.Controllers
         }
 
         [HttpGet]
-        [Route("id:guid")]
-        public async Task<IActionResult> GetAuthorbyIdAsync([FromHeader] Guid id)
+        [Route("{id:guid}")]
+        public async Task<IActionResult> GetAuthorbyIdAsync([FromRoute] Guid id)
         { 
             var response = await _authorInterface.GetAuthorByIdAsync(id);
             if(response is not null)
@@ -64,8 +63,8 @@ namespace BlogIT.Controllers
         }
 
         [HttpPut]
-        [Route("id:guid")]
-        public async Task<IActionResult> UpdateAsync([FromHeader]Guid id, [FromBody]UpdateAuthorDto updateAuthorDto)
+        [Route("{id:guid}")]
+        public async Task<IActionResult> UpdateAsync([FromRoute]Guid id, [FromBody]UpdateAuthorDto updateAuthorDto)
         {
             var author = new Author
             {
@@ -95,7 +94,6 @@ namespace BlogIT.Controllers
         }
 
         [HttpPost]
-        [Route("author")]
         public async Task<IActionResult> CreateAsync([FromBody] CreateAuthorDto createAuthorDto)
         {
             var author = new Author
@@ -124,8 +122,8 @@ namespace BlogIT.Controllers
             }
         }
         [HttpDelete]
-        [Route("author")]
-        public async Task<IActionResult> DeleteAsync([FromHeader] Guid id)
+        [Route("{id:guid}")]
+        public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
         {
             await _authorInterface.DeleteAsync(id);
             if (Response is not null)

@@ -19,7 +19,6 @@ namespace BlogIT.Controllers
         }
 
         [HttpGet]
-        [Route("categories")]
         public async Task<IActionResult> GetAllCategories()
         {
             //store results in variable
@@ -41,8 +40,8 @@ namespace BlogIT.Controllers
         }
 
         [HttpGet]
-        [Route("id:guid")]
-        public async Task<IActionResult> GetCategoryById([FromHeader] Guid id)
+        [Route("{id:guid}")]
+        public async Task<IActionResult> GetCategoryById([FromRoute] Guid id)
         {
             var response = await _categoryRepository.GetCategoryByIdAsync(id);
 
@@ -62,8 +61,8 @@ namespace BlogIT.Controllers
         }
 
         [HttpPut]
-        [Route("id:guid")]
-        public async Task<IActionResult> UpdateCategory([FromHeader] Guid id, [FromBody] UpdateCateogryRequestDto request)
+        [Route("{id:guid}")]
+        public async Task<IActionResult> UpdateCategory([FromRoute] Guid id, [FromBody] UpdateCateogryRequestDto request)
         {
             //convert request dto to data model
             var category = new Category
@@ -92,7 +91,6 @@ namespace BlogIT.Controllers
         }
 
         [HttpPost]
-        [Route("category")]
         public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryDto createCategoryDto)
         {
             //convert dto to data model
@@ -123,7 +121,7 @@ namespace BlogIT.Controllers
         }
 
         [HttpDelete]
-        [Route("category")]
+        [Route("{id:guid}")]
         public async Task<IActionResult> DeleteCategory([FromHeader] Guid id)
         {
             

@@ -24,7 +24,6 @@ namespace BlogIT.Controllers
 
         //Get All Blogs
         [HttpGet]
-        [Route("blogs")]
         public async Task<IActionResult> GetAllBlogPosts()
         {
             var blogPosts = await _blogInterface.GetAllBlogsAsync();
@@ -58,10 +57,10 @@ namespace BlogIT.Controllers
 
         //Get Blog By Id
         [HttpGet]
-        [Route("id:guid")]
-        public async Task<IActionResult> GetBlogPostById([FromHeader] Guid Id)
+        [Route("{id:guid}")]
+        public async Task<IActionResult> GetBlogPostById([FromRoute] Guid id)
         {
-            var blogPost = await _blogInterface.GetBlogByIdAsync(Id);
+            var blogPost = await _blogInterface.GetBlogByIdAsync(id);
             if (blogPost is not null)
             {
                 //convert domain model to dto
@@ -93,8 +92,8 @@ namespace BlogIT.Controllers
 
         //Update Blog
         [HttpPut]
-        [Route("id:guid")]
-        public async Task<IActionResult> UpdateBlogById([FromHeader] Guid id, [FromBody] UpdateBlogDto updateBlogDto)
+        [Route("{id:guid}")]
+        public async Task<IActionResult> UpdateBlogById([FromRoute]Guid id, [FromBody]UpdateBlogDto updateBlogDto)
         {
             //check if author exists
             var existingAuthor = await _authorInterface.GetAuthorByIdAsync(updateBlogDto.Author);
@@ -103,22 +102,22 @@ namespace BlogIT.Controllers
                 return NotFound("Author not found");
             }
 
-                //convert DTO to Domain model
-                var blog = new Blog
-                {
-                    Id = id,
-                    Title = updateBlogDto.Title,
-                    Description = updateBlogDto.Description,
-                    Author = existingAuthor!,
-                    FeaturedImageUrl = updateBlogDto.FeaturedImageUrl,
-                    UrlHandle = updateBlogDto.UrlHandle,
-                    IsVisible = updateBlogDto.IsVisible,
-                    CreatedTimeStamp = DateOnly.FromDateTime(DateTime.Now),
-                    LastEditTimeStamp = DateOnly.FromDateTime(DateTime.Now),
-                    Categories = new List<Category>()
-                };
+            //convert DTO to Domain model
+            var blog = new Blog
+            {
+                Id = id,
+                Title = updateBlogDto.Title,
+                Description = updateBlogDto.Description,
+                Author = existingAuthor!,
+                FeaturedImageUrl = updateBlogDto.FeaturedImageUrl,
+                UrlHandle = updateBlogDto.UrlHandle,
+                IsVisible = updateBlogDto.IsVisible,
+                CreatedTimeStamp = DateOnly.FromDateTime(DateTime.Now),
+                LastEditTimeStamp = DateOnly.FromDateTime(DateTime.Now),
+                Categories = new List<Category>()
+            };
 
-           // loop through categories
+            // loop through categories
             foreach (var categoryGuid in updateBlogDto.Categories)
             {
                 var existingCategory = await _categoryInterface.GetCategoryByIdAsync(categoryGuid);
@@ -134,43 +133,42 @@ namespace BlogIT.Controllers
 
             //call repository to update blog post domain model
             var updateBlogPost = await _blogInterface.UpdateBlogAsync(blog);
-                if (updateBlogPost is null)
+            if (updateBlogPost is null)
+            {
+                return NotFound();
+            }
+
+            var response = new BlogPostDto
+            {
+                Id = blog.Id,
+                Title = blog.Title,
+                Description = blog.Description,
+                Author = blog.Author,
+                FeaturedImageUrl = blog.FeaturedImageUrl,
+                UrlHandle = blog.UrlHandle,
+                IsVisible = blog.IsVisible,
+                CreatedTimeStamp = blog.CreatedTimeStamp,
+                LastEditTimeStamp = blog.LastEditTimeStamp,
+                Categories = blog.Categories.Select(x => new CategoryDto
                 {
-                    return NotFound();
-                }
+                    Id = x.Id,
+                    Name = x.Name,
+                    UrlHandle = x.UrlHandle
+                }).ToList()
 
-                var response = new BlogPostDto
-                {
-                    Id = blog.Id,
-                    Title = blog.Title,
-                    Description = blog.Description,
-                    Author = blog.Author,
-                    FeaturedImageUrl = blog.FeaturedImageUrl,
-                    UrlHandle = blog.UrlHandle,
-                    IsVisible = blog.IsVisible,
-                    CreatedTimeStamp = blog.CreatedTimeStamp,
-                    LastEditTimeStamp = blog.LastEditTimeStamp,
-                    Categories = blog.Categories.Select(x => new CategoryDto
-                    {
-                        Id = x.Id,
-                        Name = x.Name,
-                        UrlHandle = x.UrlHandle
-                    }).ToList()
+            };
 
-                };
-
-                return Ok(response);
+            return Ok(response);
         }
 
         //Create Blog
         [HttpPost]
-        [Route("blog")]
-        public async Task<IActionResult> CreateBlogPost(CreateBlogDto createBlogDto)
+        public async Task<IActionResult> CreateBlogPost([FromBody]CreateBlogDto createBlogDto)
         {
-            
+
             //check if author exists
             var resultAuthor = await _authorInterface.GetAuthorByIdAsync(createBlogDto.Author);
-            if(Response is null)
+            if (Response is null)
             {
                 return NotFound("Author not found");
             }
@@ -226,16 +224,16 @@ namespace BlogIT.Controllers
             }
             else
             {
-                 return StatusCode(500, "An error occurred while creating the blog post.");
+                return StatusCode(500, "An error occurred while creating the blog post.");
             }
         }
 
         //Delete Blog
         [HttpDelete]
-        [Route("blog")]
-        public async Task<IActionResult> DeleteBlogPostById(Guid Id)
+        [Route("{id:guid}")]
+        public async Task<IActionResult> DeleteBlogPostById(Guid id)
         {
-            var deletedBlogPost = await _blogInterface.DeleteBlogAsync(Id);
+            var deletedBlogPost = await _blogInterface.DeleteBlogAsync(id);
             if (deletedBlogPost is not null)
             {
                 return Ok("Blog deleted successfully");
