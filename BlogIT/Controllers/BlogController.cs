@@ -236,7 +236,25 @@ namespace BlogIT.Controllers
             var deletedBlogPost = await _blogInterface.DeleteBlogAsync(id);
             if (deletedBlogPost is not null)
             {
-                return Ok("Blog deleted successfully");
+                var response = new BlogPostDto
+                {
+                    Id = deletedBlogPost.Id,
+                    Title = deletedBlogPost.Title,
+                    Description = deletedBlogPost.Description,
+                    Author = deletedBlogPost.Author,
+                    FeaturedImageUrl = deletedBlogPost.FeaturedImageUrl,
+                    UrlHandle = deletedBlogPost.UrlHandle,
+                    CreatedTimeStamp = deletedBlogPost.CreatedTimeStamp,
+                    IsVisible = deletedBlogPost.IsVisible,
+                    Categories = deletedBlogPost.Categories.Select(x => new CategoryDto
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        UrlHandle = x.UrlHandle
+                    }).ToList()
+                };
+                
+                return Ok(response);
             }
             else
             {

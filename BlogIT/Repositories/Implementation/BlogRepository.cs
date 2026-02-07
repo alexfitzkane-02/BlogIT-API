@@ -23,7 +23,11 @@ namespace BlogIT.Repositories.Implementation
 
         public async Task<Blog?> DeleteBlogAsync(Guid blogId)
         {
-            var response = await _applicationDbContext.Blogs.FirstOrDefaultAsync(x => x.Id == blogId);
+            var response = await _applicationDbContext.Blogs
+                .Include(x => x.Author)
+                .Include(x => x.Categories)
+                .FirstOrDefaultAsync(x => x.Id == blogId);
+
             if (response is not null)
             {
                 _applicationDbContext.Blogs.Remove(response);
