@@ -90,6 +90,41 @@ namespace BlogIT.Controllers
             }
         }
 
+        //get blog post by url handle
+        [HttpGet]
+        [Route("{urlHandle}")]
+        public async Task<IActionResult> GetBlogPostByUrlHandle([FromRoute] string urlHandle)
+        {
+            var response = await _blogInterface.GetBlogPostByUrlHandle(urlHandle);
+
+            //covert model to dto 
+            if (response is not null)
+            {
+                var blogDto = new BlogPostDto
+                {
+                    Id = response.Id,
+                    Title = response.Title,
+                    Description = response.Description,
+                    Author = response.Author,
+                    FeaturedImageUrl = response.FeaturedImageUrl,
+                    UrlHandle = response.UrlHandle,
+                    IsVisible = response.IsVisible,
+                    CreatedTimeStamp = response.CreatedTimeStamp,
+                    LastEditTimeStamp = response.LastEditTimeStamp,
+                    Categories = response.Categories.Select(x => new CategoryDto
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        UrlHandle = x.UrlHandle
+                    }).ToList()
+                };
+
+                return Ok(blogDto);
+            }
+
+            return NotFound("Blog post was not found");
+        }
+
         //Update Blog
         [HttpPut]
         [Route("{id:guid}")]

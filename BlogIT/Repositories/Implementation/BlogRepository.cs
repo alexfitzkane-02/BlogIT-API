@@ -2,6 +2,7 @@
 using BlogIT.Models.Domain;
 using BlogIT.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 
 namespace BlogIT.Repositories.Implementation
 {
@@ -72,6 +73,20 @@ namespace BlogIT.Repositories.Implementation
 
                 await _applicationDbContext.SaveChangesAsync();
 
+                return response;
+            }
+
+            return null;
+        }
+
+        public async Task<Blog?> GetBlogPostByUrlHandle(string urlHandle)
+        {
+            var response = await _applicationDbContext.Blogs
+                .Include(x => x.Author)
+                .Include(x => x.Categories)
+                .FirstOrDefaultAsync(x => x.UrlHandle == urlHandle);
+            if (response is not null)
+            {
                 return response;
             }
 
