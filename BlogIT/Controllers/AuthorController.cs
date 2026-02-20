@@ -1,6 +1,7 @@
 ﻿using BlogIT.Models.Domain;
 using BlogIT.Models.Dto;
 using BlogIT.Repositories.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Abstractions;
@@ -64,6 +65,7 @@ namespace BlogIT.Controllers
 
         [HttpPut]
         [Route("{id:guid}")]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> UpdateAsync([FromRoute]Guid id, [FromBody]UpdateAuthorDto updateAuthorDto)
         {
             var author = new Author
@@ -94,6 +96,7 @@ namespace BlogIT.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> CreateAsync([FromBody] CreateAuthorDto createAuthorDto)
         {
             var author = new Author
@@ -123,12 +126,20 @@ namespace BlogIT.Controllers
         }
         [HttpDelete]
         [Route("{id:guid}")]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
         {
-            await _authorInterface.DeleteAsync(id);
-            if (Response is not null)
+            var response = await _authorInterface.DeleteAsync(id);
+            if (response is not null)
             {
-                return Ok("Author deleted successfully");
+                var authorResponse = new AuthorDto
+                {
+                    Id = response.Id,
+                    Name = response.Name,
+                    UrlHandle = response.UrlHandle
+                };
+
+                return Ok(authorResponse);
 
             }
             else

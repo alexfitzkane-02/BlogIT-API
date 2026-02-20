@@ -2,6 +2,7 @@
 using BlogIT.Models.Domain;
 using BlogIT.Models.Dto;
 using BlogIT.Repositories.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -62,6 +63,7 @@ namespace BlogIT.Controllers
 
         [HttpPut]
         [Route("{id:guid}")]
+        [Authorize(Roles ="Writer")]
         public async Task<IActionResult> UpdateCategory([FromRoute] Guid id, [FromBody] UpdateCateogryRequestDto request)
         {
             //convert request dto to data model
@@ -91,6 +93,7 @@ namespace BlogIT.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles ="Writer")]
         public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryDto createCategoryDto)
         {
             //convert dto to data model
@@ -122,14 +125,24 @@ namespace BlogIT.Controllers
 
         [HttpDelete]
         [Route("{id:guid}")]
-        public async Task<IActionResult> DeleteCategory([FromHeader] Guid id)
+        [Authorize(Roles ="Writer")]
+        public async Task<IActionResult> DeleteCategory([FromRoute] Guid id)
         {
             
             var response = await _categoryRepository.DeleteAsync(id);
             
             if(response is not null)
             {
-                return Ok("Category deleted successfully");
+                //convert model to dto
+
+                var deletedCategory = new CategoryDto
+                {
+                    Id = response.Id,
+                    Name = response.Name,
+                    UrlHandle = response.UrlHandle
+                };
+
+                return Ok(deletedCategory);
             }
             else
             {

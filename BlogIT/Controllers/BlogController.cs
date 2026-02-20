@@ -2,6 +2,7 @@
 using BlogIT.Models.Dto;
 using BlogIT.Repositories.Implementation;
 using BlogIT.Repositories.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -128,6 +129,7 @@ namespace BlogIT.Controllers
         //Update Blog
         [HttpPut]
         [Route("{id:guid}")]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> UpdateBlogById([FromRoute]Guid id, [FromBody]UpdateBlogDto updateBlogDto)
         {
             //check if author exists
@@ -198,6 +200,7 @@ namespace BlogIT.Controllers
 
         //Create Blog
         [HttpPost]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> CreateBlogPost([FromBody]CreateBlogDto createBlogDto)
         {
 
@@ -266,6 +269,7 @@ namespace BlogIT.Controllers
         //Delete Blog
         [HttpDelete]
         [Route("{id:guid}")]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> DeleteBlogPostById(Guid id)
         {
             var deletedBlogPost = await _blogInterface.DeleteBlogAsync(id);
