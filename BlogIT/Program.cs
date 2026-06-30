@@ -45,10 +45,13 @@ builder.Services.AddDbContext<AuthDbContext>(options =>
     options.UseSqlServer(connectionSring);
 });
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddScoped<ICategoryInterface, CategoryRepository>();
 builder.Services.AddScoped<IAuthorInterface, AuthorRepository>();
 builder.Services.AddScoped<IBlogInterface, BlogRepository>();
 builder.Services.AddScoped<ITokenInterface, TokenRepository>();
+builder.Services.AddScoped<IImageInterface, ImageRepository>();
 
 builder.Services.AddIdentityCore<IdentityUser>()
     .AddRoles<IdentityRole>()
@@ -110,6 +113,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.UseStaticFiles();
 
 app.UseHttpsRedirection();
 

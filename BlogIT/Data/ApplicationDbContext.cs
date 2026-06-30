@@ -12,5 +12,6 @@ namespace BlogIT.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<Blog> Blogs { get; set; }
         public DbSet<Author> Authors { get; set; }
+        public DbSet<BlogImage> BlogImages { get; set; }
     }
 }
