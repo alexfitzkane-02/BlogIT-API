@@ -45,8 +45,6 @@ namespace BlogIT.Controllers
         }
 
 
-
-
         //POST: {apibaseurl}/api/images
 
         [HttpPost]
