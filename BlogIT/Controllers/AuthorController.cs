@@ -4,10 +4,12 @@ using BlogIT.Repositories.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Abstractions;
 
 namespace BlogIT.Controllers
 {
+    [EnableRateLimiting("auth")]
     [Route("api/[controller]")]
     [ApiController]
     public class AuthorController : ControllerBase

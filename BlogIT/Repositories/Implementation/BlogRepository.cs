@@ -39,12 +39,18 @@ namespace BlogIT.Repositories.Implementation
                 return null;
         }
 
-        public async Task<IEnumerable<Blog>> GetAllBlogsAsync()
+        public async Task<(IEnumerable<Blog> Blogs, int TotalCount)> GetAllBlogsAsync(int pageNumber, int pageSize)
         {
-            return await _applicationDbContext.Blogs
-                    .Include(x => x.Author)
-                    .Include(x => x.Categories)
-                        .ToListAsync();
+            var totalCount = await _applicationDbContext.Blogs.CountAsync();
+
+            var blogs = await _applicationDbContext.Blogs
+                .Include(x => x.Author)
+                .Include(x => x.Categories)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (blogs, totalCount);
         }
 
         public async Task<Blog?> GetBlogByIdAsync(Guid blogId)

@@ -4,7 +4,7 @@ namespace BlogIT.Repositories.Interface
 {
     public interface IBlogInterface
     {
-        Task<IEnumerable<Blog>> GetAllBlogsAsync();
+        Task<(IEnumerable<Blog> Blogs, int TotalCount)> GetAllBlogsAsync(int pageNumber, int pageSize);
         Task<Blog?> GetBlogByIdAsync(Guid blogId);
         Task<Blog?> GetBlogPostByUrlHandle (string urlHandle);
         Task<Blog> CreateBlogAsync(Blog newBlog);

@@ -4,10 +4,12 @@ using BlogIT.Repositories.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Security.Claims;
 
 namespace BlogIT.Controllers
 {
+    [EnableRateLimiting("auth")]
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase

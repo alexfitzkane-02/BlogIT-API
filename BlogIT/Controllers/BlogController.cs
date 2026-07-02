@@ -5,9 +5,11 @@ using BlogIT.Repositories.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace BlogIT.Controllers
 {
+    [EnableRateLimiting("auth")]
     [Route("api/[controller]")]
     [ApiController]
     public class BlogController : ControllerBase
@@ -25,9 +27,9 @@ namespace BlogIT.Controllers
 
         //Get All Blogs
         [HttpGet]
-        public async Task<IActionResult> GetAllBlogPosts()
+        public async Task<IActionResult> GetAllBlogPosts(int pageNumber, int pageSize)
         {
-            var blogPosts = await _blogInterface.GetAllBlogsAsync();
+            var (blogPosts, totalCount) = await _blogInterface.GetAllBlogsAsync(pageNumber, pageSize);
 
             //convert model to dto
             var response = new List<BlogPostDto>();
@@ -53,7 +55,14 @@ namespace BlogIT.Controllers
                 });
             }
 
-            return Ok(response);
+            return Ok(new
+            {
+                page = pageNumber,
+                pageSize = pageSize,
+                totalCount = totalCount,
+                totalPages = (int)Math.Ceiling((double)totalCount / pageSize),
+                data = response
+            });
         }
 
         //Get Blog By Id
