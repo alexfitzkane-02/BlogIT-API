@@ -1,3 +1,6 @@
+![Build](https://github.com/alexfitzkane-02/BlogIT-API/actions/workflows/ci.yml/badge.svg)
+
+
 # BlogIT-API
 
 BlogIT-API is a C# library that contains all the server side logic for performing CRUD operations related to blog posts users make, credentialing around the application, and more!  
