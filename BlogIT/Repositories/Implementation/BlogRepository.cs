@@ -2,7 +2,6 @@
 using BlogIT.Models.Domain;
 using BlogIT.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
 
 namespace BlogIT.Repositories.Implementation
 {
