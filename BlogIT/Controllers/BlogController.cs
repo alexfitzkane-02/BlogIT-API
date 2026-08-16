@@ -27,9 +27,9 @@ namespace BlogIT.Controllers
 
         //Get All Blogs
         [HttpGet]
-        public async Task<IActionResult> GetAllBlogPosts(int pageNumber, int pageSize)
+        public async Task<IActionResult> GetAllBlogPosts([FromQuery] int pageNumber = 1,[FromQuery] int pageSize = 10, [FromQuery] string? search = null, [FromQuery] bool? isVisible = null)
         {
-            var (blogPosts, totalCount) = await _blogInterface.GetAllBlogsAsync(pageNumber, pageSize);
+            var (blogPosts, totalCount) = await _blogInterface.GetAllBlogsAsync(pageNumber, pageSize, search, isVisible);
 
             //convert model to dto
             var response = new List<BlogPostDto>();
@@ -215,7 +215,7 @@ namespace BlogIT.Controllers
 
             //check if author exists
             var resultAuthor = await _authorInterface.GetAuthorByIdAsync(createBlogDto.Author);
-            if (Response is null)
+            if (resultAuthor is null)
             {
                 return NotFound("Author not found");
             }

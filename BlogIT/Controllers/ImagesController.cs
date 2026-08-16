@@ -94,7 +94,7 @@ namespace BlogIT.Controllers
                 ModelState.AddModelError("file", "Unsupported file format");
             }
 
-            if (file.Length > 1048760)
+            if (file.Length > 10485760) //10MB
             {
                 ModelState.AddModelError("file", "File size cannot be more than 10MB");
             }

@@ -39,13 +39,28 @@ namespace BlogIT.Repositories.Implementation
                 return null;
         }
 
-        public async Task<(IEnumerable<Blog> Blogs, int TotalCount)> GetAllBlogsAsync(int pageNumber, int pageSize)
+        public async Task<(IEnumerable<Blog> Blogs, int TotalCount)> GetAllBlogsAsync(int pageNumber, int pageSize, string? search = null, bool? isVisible = null)
         {
-            var totalCount = await _applicationDbContext.Blogs.CountAsync();
-
-            var blogs = await _applicationDbContext.Blogs
+            var query = _applicationDbContext.Blogs
                 .Include(x => x.Author)
                 .Include(x => x.Categories)
+                .AsQueryable();
+
+            if (isVisible.HasValue)
+            {
+                query = query.Where(x => x.IsVisible == isVisible.Value);
+            }
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(x =>
+                    x.Title.Contains(search) ||
+                    x.Description.Contains(search));
+            }
+
+            var totalCount = await query.CountAsync();
+
+            var blogs = await query
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
